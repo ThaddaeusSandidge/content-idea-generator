@@ -77,6 +77,45 @@ describe("signal sources", () => {
     );
   });
 
+  it("spaces Reddit feeds and retries a rate-limited request once", async () => {
+    const atom = (title: string) => `<?xml version="1.0"?>
+      <feed xmlns="http://www.w3.org/2005/Atom">
+        <entry><title>${title}</title><link href="https://reddit.com/post" /></entry>
+      </feed>`;
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(atom("First"), { status: 200 }))
+      .mockResolvedValueOnce(
+        new Response("", { status: 429, headers: { "Retry-After": "3" } })
+      )
+      .mockResolvedValueOnce(new Response(atom("Second"), { status: 200 }));
+    const sleepMock = vi.fn().mockResolvedValue(undefined);
+
+    const items = await loadReddit(
+      context({
+        fetch: fetchMock as unknown as typeof fetch,
+        subreddits: ["first", "second"]
+      }),
+      {
+        sleep: sleepMock,
+        spacingMs: 1_000,
+        retryJitterMs: 0
+      }
+    );
+
+    expect(items.map((item) => item.title)).toEqual(["First", "Second"]);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(fetchMock.mock.calls.map(([url]) => url)).toEqual([
+      expect.stringContaining("/r/first/"),
+      expect.stringContaining("/r/second/"),
+      expect.stringContaining("/r/second/")
+    ]);
+    expect(sleepMock.mock.calls.map(([milliseconds]) => milliseconds)).toEqual([
+      1_000,
+      3_000
+    ]);
+  });
+
   it("builds the GitHub new-and-rising query", async () => {
     const repos = vi.fn().mockResolvedValue({
       data: {
