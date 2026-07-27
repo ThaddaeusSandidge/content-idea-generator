@@ -1,6 +1,6 @@
 {
   "name": "content-idea-generator",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "A GitHub Action that turns weekly web signals into creator-ready content ideas.",
   "main": "dist/index.js",

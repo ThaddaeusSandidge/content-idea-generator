@@ -54,7 +54,8 @@ OpenAI Responses API request:
 - **GitHub new and rising:** repositories created in the last seven days,
   searched by configured language and sorted by stars.
 - **Reddit:** the weekly top Atom feed for each configured subreddit. Feed
-  order is retained as rank; Reddit's public JSON endpoint is not used.
+  order is retained as rank; Reddit's public JSON endpoint is not used. Feeds
+  are requested sequentially with rate-limit-aware retry behavior.
 - **Recent commits:** commit subjects from the current repository over the last
   seven days.
 
