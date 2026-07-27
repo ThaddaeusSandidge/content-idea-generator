@@ -1,0 +1,30 @@
+{
+  "name": "content-idea-generator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A GitHub Action that turns weekly web signals into creator-ready content ideas.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts -o dist --source-map",
+    "check-dist": "npm run build && git diff --exit-code -- dist",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@actions/core": "3.0.1",
+    "@actions/github": "9.1.1",
+    "fast-xml-parser": "5.10.1",
+    "openai": "6.49.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.1",
+    "@vercel/ncc": "0.44.1",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
+  }
+}

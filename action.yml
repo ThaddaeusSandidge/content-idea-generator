@@ -1,0 +1,55 @@
+name: Content Idea Generator
+description: Turn weekly web and repository signals into creator-ready content ideas in a GitHub Issue.
+author: Thad Sandidge
+branding:
+  icon: film
+  color: purple
+
+inputs:
+  openai-api-key:
+    description: OpenAI API key. Store it in a repository secret.
+    required: true
+  github-token:
+    description: GitHub token used for repository search, commits, labels, and Issue creation.
+    required: false
+    default: ${{ github.token }}
+  niche:
+    description: Creator niche and audience context.
+    required: false
+    default: Generic technology and coding content for developers
+  languages:
+    description: Comma-separated languages used for GitHub new-and-rising searches.
+    required: false
+    default: typescript,swift,python
+  subreddits:
+    description: Comma-separated subreddits used for weekly Reddit Atom feeds.
+    required: false
+    default: programming,webdev,ExperiencedDevs
+  num-ideas:
+    description: Number of ideas to create (1-25).
+    required: false
+    default: "10"
+  issue-label:
+    description: Label applied to generated Issues.
+    required: false
+    default: content-ideas
+  sources:
+    description: Comma-separated sources from hackernews,github,reddit,commits.
+    required: false
+    default: hackernews,github,reddit,commits
+  model:
+    description: OpenAI model used for idea generation.
+    required: false
+    default: gpt-5.6-luna
+
+outputs:
+  issue-number:
+    description: Number of the created GitHub Issue.
+  issue-url:
+    description: URL of the created GitHub Issue.
+  ideas-count:
+    description: Number of ideas written to the Issue.
+
+runs:
+  using: node24
+  main: dist/index.js
